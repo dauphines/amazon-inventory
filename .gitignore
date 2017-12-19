@@ -3,6 +3,14 @@ config/development.json
 config/production.json
 config/staging.json
 config/test.json
+answers.csv
+categories.csv
+prodcate.csv
+products.csv
+questions.csv
+reviews.csv
+test.csv
+stock.csv
 
 # OS X
 .DS_Store
