@@ -13,6 +13,7 @@ app.get('/', function(req, res) {
 });
 app.put('/update', function() {
   //FROM transactions
+  console.log('testing');
 });
 
 app.get('/inv/:itemid', function() {
