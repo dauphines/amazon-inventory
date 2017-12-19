@@ -49,3 +49,9 @@ CREATE TABLE category (
   id INTEGER PRIMARY KEY,
   name VARCHAR(50)
 );
+
+CREATE TABLE stock (
+  id INTEGER PRIMARY KEY,
+  productId INTEGER references products(id),
+  amount INTEGER
+);

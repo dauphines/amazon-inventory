@@ -2,18 +2,27 @@ var faker = require('faker');
 var express = require('express');
 var fs = require('file-system');
 var axios = require('axios');
+var bodyParser = require('body-parser');
+var db = require('client');
 
 var app = express();
 
 //bookshelf
 //connect
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
+
 app.get('/', function(req, res) {
   console.log('yay');
   res.send('done');
 });
-app.put('/update', function() {
+app.put('/update', function(req, res) {
   //FROM transactions
-  console.log('testing');
+  if (!req.body) {
+    return res.sendStatus(400);
+  } 
+
 });
 
 app.get('/inv/:itemid', function() {
@@ -30,13 +39,20 @@ app.put('/inv/vendor/newItem', function() {
   });
 });
 
-app.post('/inv/vendor/update', function() {
-  //FROM vendors
-  axois.put('/inv/update', {
-    //product
-    //quantity
-    //...
+app.post('/inv/vendor/update', function(req, res) {
+  if (!req.body) {
+    return res.sendStatus(400);
+  }
+  db.query(`UPDATE amountinstock SET amount = amount + ${req.quantity} WHERE productid = ${req.productid}`, (err, res) => {
+    if (res) {
+      axois.put('/inv/update', {
+        //product
+        //quantity
+        //...
+      });
+    }
   });
+  //FROM vendors
 });
 
 app.listen(8010, function() {

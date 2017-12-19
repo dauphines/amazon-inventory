@@ -140,3 +140,24 @@ cStream.once('open', (fd) => {
   console.log('done');
 });
 //COPY category FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/categories.csv' DELIMITER ',' CSV;
+
+var stock = function() {
+  var stock = '' + i + ',' + i + ',' + Math.round(Math.random() * (productCount - 1));
+  return stock;
+};
+
+var sStream = fs.createWriteStream('stock.csv', {'flags': 'a', 'encoding': null, 'mode': 0o666});
+console.log('start');
+sStream.once('open', (fd) => {
+  for (var j = 0; j < productCount; j++) {
+    sStream.write(stock() + '\n');
+    if (j % 100000 === 0) {
+      console.log(j);
+    }
+    i++;
+  }
+  sStream.end();
+  console.log('done');
+});
+//COPY stock FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/stock.csv' DELIMITER ',' CSV;
+
