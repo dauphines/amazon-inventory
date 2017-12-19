@@ -43,16 +43,14 @@ app.post('/inv/vendor/update', function(req, res) {
   if (!req.body) {
     return res.sendStatus(400);
   }
-  db.query(`UPDATE amountinstock SET amount = amount + ${req.quantity} WHERE productid = ${req.productid}`, (err, res) => {
+  db.query(`UPDATE stock SET amount = amount + ${req.quantity} WHERE productid = ${req.productid}`, (err, res) => {
     if (res) {
       axois.put('/inv/update', {
-        //product
-        //quantity
-        //...
+        productid: req.productid,
+        quantity: req.quantity,
       });
     }
   });
-  //FROM vendors
 });
 
 app.listen(8010, function() {
