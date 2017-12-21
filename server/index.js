@@ -40,16 +40,16 @@ app.get('/', (req, res) => {
   //   .catch(err => {
   //     console.log('PUT BAD');
   //   });
-  axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
-    productname: 'giraffe socks',
-    productprice: '$15.00',
-    prime: true,
-    productdes: 'adding a new item',
-    stock: true,
-    soldby: 'me.inc',
-    quantity: 500,
-    categories: [2, 5, 10],
-  })
+  // axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
+  //   productname: 'giraffe socks',
+  //   productprice: '$15.00',
+  //   prime: true,
+  //   productdes: 'adding a new item',
+  //   stock: true,
+  //   soldby: 'me.inc',
+  //   quantity: 500,
+  //   categories: [2, 5, 10],
+  // })
   //   .then(res => {
   //     console.log('POST RES ', res);
   //   })
@@ -149,7 +149,19 @@ app.put('/inv/vendor/update', function(req, res) {
   if (!req.body) {
     return res.sendStatus(400);
   }
-  db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`);
+  db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`)
+    .then(res => {
+      axios.put('http://127.0.0.1:8010/inv/update', {
+        //SEND TO CLIENT
+        update: req.body,
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log( 'ERR ', err);
+        });
+    });
 
   res.send('DONE');
 });
