@@ -40,21 +40,22 @@ app.get('/', (req, res) => {
   //   .catch(err => {
   //     console.log('PUT BAD');
   //   });
-  axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
-    productname: 'giraffe socks',
-    productprice: '$15.00',
-    prime: true,
-    productdes: 'adding a new item',
-    stock: true,
-    soldby: 'me.inc',
-    quantity: 500,
-  })
-    .then(res => {
-      console.log('POST RES ', res);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  // axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
+  //   productname: 'giraffe socks',
+  //   productprice: '$15.00',
+  //   prime: true,
+  //   productdes: 'adding a new item',
+  //   stock: true,
+  //   soldby: 'me.inc',
+  //   quantity: 500,
+  //   categories: [2, 5, 10],
+  // })
+  //   .then(res => {
+  //     console.log('POST RES ', res);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
 });
 
 app.put('/update', function(req, res) {
@@ -79,13 +80,16 @@ app.put('/undo', function(req, res) {
 
 app.get('/inv/:itemid', function(req, res) {
   //FROM client
-  db.query(`SELECT * FROM products, questions, answers WHERE products.id = questions.productid AND questions.id = answers.questionid AND products.id = ${req.url.slice(5)}`)
+  let prodInfo = {};
+  db.query(`SELECT * FROM products LEFT OUTER JOIN questions ON products.id = questions.productid LEFT OUTER JOIN 
+    answers ON questions.id = answers.questionid WHERE products.id = ${req.url.slice(5)}`)
     .then(res => {
-      let prodDetails = res.rows;
-      db.query(`SELECT * FROM reviews, stock, productcategory WHERE reviews.productid = ${req.url.slice(5)} 
-        AND stock.productid = ${req.url.slice(5)} AND productcategory.productid = ${req.url.slice(5)}`)
+      prodInfo['prodDetailsQA'] = res.rows;
+      db.query(`SELECT * FROM reviews, stock, productcategory, category WHERE reviews.productid = ${req.url.slice(5)} 
+        AND stock.productid = ${req.url.slice(5)} AND productcategory.productid = ${req.url.slice(5)} AND category.id = productcategory.categoryid`)
         .then (res => {
-          prodDetails = prodDetails.concat(res.rows);
+          prodInfo['reviews'] = res.rows;
+          console.log(prodInfo);
           res.send(prodDetails);
         });
     })
@@ -97,19 +101,39 @@ app.get('/inv/:itemid', function(req, res) {
 
 app.post('/inv/vendor/newItem', function(req, res) {
   //FROM vendors
-  //insert products to include the name, incremented id, product price, prime, productdes, rating, instock true, soldby, and fulfilled by
-  //
+  console.log(req.body);
   db.query(`INSERT INTO products VALUES (DEFAULT, '${req.body.productname}', '${req.body.productprice}', true, '${req.body.productdes}', 
     0, true, '${req.body.soldby}', 'Amazon.com')`)
     .then(res => {
       db.query(`SELECT id FROM products WHERE productname = '${req.body.productname}' AND productprice = '${req.body.productprice}'`)
         .then(res => {
-          db.query(`INSERT INTO stock VALUES (DEFAULT, ${res.rows[0].id}, ${req.body.quantity})`)
+          let id = res.rows[0].id;
+          db.query(`INSERT INTO stock VALUES (DEFAULT, ${id}, ${req.body.quantity})`)
             .then(res => {
-              // console.log(res);
+              let categories = req.body.categories;
+              for (let c = 0; c < categories.length; c++) {
+                db.query(`INSERT INTO productcategory VALUES (DEFAULT, ${id}, ${categories[c]})`)
+                  .then(res => {
+                    // console.log(res);
+                  })
+                  .catch(err => {
+                    console.log('ERR PC ', err);
+                  });
+              }
+              axios.post('http://127.0.0.1:8010/inv/vendor', {
+                //SEND TO CLIENT
+                newItem: req.body,
+                itemId: id,
+              })
+                .then(res => {
+                  console.log('POST RES', res);
+                })
+                .catch(err => {
+                  console.log('POST ERR ', err);
+                });
             })
             .catch(err => {
-              console.log('ERR ', err);
+              console.log('ERR STOCK ', err);
             });
         })
         .catch(err => {
@@ -117,7 +141,7 @@ app.post('/inv/vendor/newItem', function(req, res) {
         });
     })
     .catch(err => {
-      console.log('ERR ', err);
+      console.log('ERR PRODs ', err);
     });
 });
 
@@ -125,10 +149,23 @@ app.put('/inv/vendor/update', function(req, res) {
   if (!req.body) {
     return res.sendStatus(400);
   }
-  db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`);
+  db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`)
+    .then(res => {
+      axios.put('http://127.0.0.1:8010/inv/update', {
+        //SEND TO CLIENT
+        update: req.body,
+      })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log( 'ERR ', err);
+        });
+    });
 
   res.send('DONE');
 });
+
 
 app.listen(8010, function() {
   console.log('listening on port 8010');
