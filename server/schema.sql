@@ -3,7 +3,7 @@
 --USE amazon;
 
 CREATE TABLE products (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   productName VARCHAR(100),
   productPrice MONEY,
   prime BOOLEAN,
@@ -15,20 +15,20 @@ CREATE TABLE products (
 );
 
 CREATE TABLE questions (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   productId INTEGER references products(id),
   questionText VARCHAR(500),
   numOfVotes INTEGER
 );
 
 CREATE TABLE answers (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   questionId INTEGER references questions(id),
   answerText VARCHAR(1000)
 );
 
 CREATE TABLE reviews (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   userName VARCHAR(50),
   title VARCHAR(100),
   date timestamp,
@@ -40,18 +40,18 @@ CREATE TABLE reviews (
 );
 
 CREATE TABLE productCategory (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   productId INTEGER references products(id),
   categoryId INTEGER references category(id)
 );
 
 CREATE TABLE category (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(50)
 );
 
 CREATE TABLE stock (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   productId INTEGER references products(id),
   amount INTEGER
 );
