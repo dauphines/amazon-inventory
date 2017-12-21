@@ -11,6 +11,7 @@ questions.csv
 reviews.csv
 test.csv
 stock.csv
+bookshelf.js
 
 # OS X
 .DS_Store
