@@ -83,7 +83,6 @@ app.get('/inv/:itemid', function(req, res) {
   let prodInfo = {};
   db.query(`SELECT * FROM products LEFT OUTER JOIN questions ON products.id = questions.productid LEFT OUTER JOIN 
     answers ON questions.id = answers.questionid WHERE products.id = ${req.url.slice(5)}`)
-    //IF THERE ARE NO QUESTIONS/ANSWERS potential problem
     .then(res => {
       prodInfo['prodDetailsQA'] = res.rows;
       db.query(`SELECT * FROM reviews, stock, productcategory, category WHERE reviews.productid = ${req.url.slice(5)} 
@@ -102,6 +101,7 @@ app.get('/inv/:itemid', function(req, res) {
 
 app.post('/inv/vendor/newItem', function(req, res) {
   //FROM vendors
+  console.log(req.body);
   db.query(`INSERT INTO products VALUES (DEFAULT, '${req.body.productname}', '${req.body.productprice}', true, '${req.body.productdes}', 
     0, true, '${req.body.soldby}', 'Amazon.com')`)
     .then(res => {
@@ -120,6 +120,17 @@ app.post('/inv/vendor/newItem', function(req, res) {
                     console.log('ERR PC ', err);
                   });
               }
+              axios.post('http://127.0.0.1:8010/inv/vendor', {
+                //SEND TO CLIENT
+                newItem: req.body,
+                itemId: id,
+              })
+                .then(res => {
+                  console.log('POST RES', res);
+                })
+                .catch(err => {
+                  console.log('POST ERR ', err);
+                });
             })
             .catch(err => {
               console.log('ERR STOCK ', err);
@@ -142,6 +153,7 @@ app.put('/inv/vendor/update', function(req, res) {
 
   res.send('DONE');
 });
+
 
 app.listen(8010, function() {
   console.log('listening on port 8010');
