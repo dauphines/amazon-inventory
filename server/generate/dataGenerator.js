@@ -1,13 +1,14 @@
 var fs = require('file-system');
 var faker = require('faker');
 
-//PRODUCTS
-var i = 0;
+var i = 1;
 var productCount = 1000000;
 var questionCount = 1500000;
+
+//PRODUCTS
 var products = function() {
   var num = Math.round(Math.random() * 5, -1);
-  var post = '' + i + ',' + faker.commerce.productName() + ',' + faker.commerce.price() + ',' +
+  var post = '' + faker.commerce.productName() + ',' + faker.commerce.price() + ',' +
     faker.random.boolean() + ',' + faker.lorem.sentences() + ',' + num + ',' + faker.random.boolean() + ',' +
     faker.lorem.word() + ',' + 'Amazon.com';
   return post;
@@ -21,19 +22,17 @@ stream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   stream.end();
   console.log('done');
 });
-// COPY products FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/products.csv' DELIMITER ',' CSV;
+// // COPY products(productName, productPrice, prime, productDes, rating, inStock, soldby, fulfilledBy) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/products.csv' DELIMITER ',' CSV;
 
 //QUESTIONS
 
-var t = Math.round(Math.random() * productCount);
-
 var questions = function() {
-  var question = '' + i + ',' + t + ',' + faker.lorem.sentence() + ',' + Math.floor(Math.random() * 500);
+  var question = '' + (Math.round(Math.random() * (productCount-1)) + 1) + ',' + faker.lorem.sentence() + ',' + Math.floor(Math.random() * 500);
   return question;
 };
 
@@ -45,18 +44,18 @@ qStream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   qStream.end();
   console.log('done');
 });
 
-// COPY questions FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/questions.csv' DELIMITER ',' CSV;
+// // COPY questions(productId, questionText, numOfVotes) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/questions.csv' DELIMITER ',' CSV;
 
-// //ANSWERS
+//ANSWERS
 
 var answers = function() {
-  var answer = '' + i + ',' + Math.round(Math.random() * (questionCount - 1)) + ',' + faker.lorem.sentence();
+  var answer = '' + Math.round(Math.random() * (questionCount - 1)) + ',' + faker.lorem.sentence();
   return answer;
 };
 
@@ -68,19 +67,19 @@ aStream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   aStream.end();
   console.log('done');
 });
 
-// COPY answers FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/answers.csv' DELIMITER ',' CSV;
+// // COPY answers(questionId, answerText) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/answers.csv' DELIMITER ',' CSV;
 
-// // REVIEWS
+// REVIEWS
 var reviews = function() {
-  var review = '' + i + ',' + faker.name.findName() + ',' + faker.lorem.words() + ',' + faker.date.past().toISOString() 
+  var review = '' + faker.name.findName() + ',' + faker.lorem.words() + ',' + faker.date.past().toISOString() 
   + ',' + faker.commerce.product() + ',' + faker.lorem.sentences() + ',' + Math.round(Math.random() * 5, -1) + ',' +
-  Math.floor(Math.random() * 500) + ',' + Math.round(Math.random() * (productCount - 1));
+  Math.floor(Math.random() * 500) + ',' + (Math.round(Math.random() * (productCount - 1)) + 1);
   return review;
 };
 
@@ -92,16 +91,16 @@ rStream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   rStream.end();
   console.log('done');
-});
-// COPY reviews FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/reviews.csv' DELIMITER ',' CSV;
+// });
+// // COPY reviews(userName, title, date, styleOfProduct, reviewText, rating, helpfulCount, productId) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/reviews.csv' DELIMITER ',' CSV;
 
 // PRODUCTCATEGORY JOIN
 var prodcate = function() {
-  var pc = '' + i + ',' + Math.round(Math.random() * (productCount - 1)) + ',' + Math.round(Math.random() * 49);
+  var pc = '' + (Math.round(Math.random() * productCount) + 1) + ',' + (Math.round(Math.random() * 49) + 1);
   return pc;
 };
 
@@ -113,16 +112,16 @@ pcStream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   pcStream.end();
   console.log('done');
 });
-// COPY productcategory FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/prodcate.csv' DELIMITER ',' CSV;
+// // COPY productcategory(productId, categoryId) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/prodcate.csv' DELIMITER ',' CSV;
 
-// CATEGORY
+// // CATEGORY
 var categories = function() {
-  var category = '' + i + ',' + faker.lorem.word();
+  var category = '' + faker.lorem.word();
   return category;
 };
 
@@ -134,15 +133,16 @@ cStream.once('open', (fd) => {
     if (j % 100000 === 0) {
       console.log(j);
     }
-    i++;
+    // i++;
   }
   cStream.end();
   console.log('done');
 });
-//COPY category FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/categories.csv' DELIMITER ',' CSV;
+// //COPY category(name) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/categories.csv' DELIMITER ',' CSV;
 
+// STOCK
 var stock = function() {
-  var stock = '' + i + ',' + i + ',' + Math.round(Math.random() * (productCount - 1));
+  var stock = '' + i + ',' + (Math.round(Math.random() * (productCount - 1)) + 1);
   return stock;
 };
 
@@ -159,5 +159,4 @@ sStream.once('open', (fd) => {
   sStream.end();
   console.log('done');
 });
-//COPY stock FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/stock.csv' DELIMITER ',' CSV;
-
+// COPY stock(productid, amount) FROM '/Users/katherinefickel/hrsf84-thesis/server/generate/stock.csv' DELIMITER ',' CSV;
