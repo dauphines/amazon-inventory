@@ -1,3 +1,7 @@
+var apm = require('elastic-apm-node').start({
+  appName: 'amazInv',
+  serverUrl: 'http://localhost:8010',
+});
 var faker = require('faker');
 var express = require('express');
 var fs = require('file-system');
@@ -28,18 +32,21 @@ app.get('/', (req, res) => {
   //   .catch(err => {
   //     console.log('PUT BAD');
   //   });
+
   // axios.get('http://127.0.0.1:8010/inv/2')
   //   .then(res => {
   //   })
   //   .catch(err => {
   //     console.log('GET itemid BAD');
   //   });
+
   // axios.get('http://127.0.0.1:8010/inv/2')
   //   .then(res => {
   //   })
   //   .catch(err => {
   //     console.log('PUT BAD');
   //   });
+
   // axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
   //   productname: 'giraffe socks',
   //   productprice: '$15.00',
@@ -88,7 +95,7 @@ app.get('/inv/:itemid', function(req, res) {
       db.query(`SELECT * FROM reviews, stock, productcategory, category WHERE reviews.productid = ${req.url.slice(5)} 
         AND stock.productid = ${req.url.slice(5)} AND productcategory.productid = ${req.url.slice(5)} AND category.id = productcategory.categoryid`)
         .then (res => {
-          prodInfo['reviews'] = res.rows;
+          prodInfo['reviewStockCate'] = res.rows;
           console.log(prodInfo);
           res.send(prodDetails);
         });
@@ -120,17 +127,17 @@ app.post('/inv/vendor/newItem', function(req, res) {
                     console.log('ERR PC ', err);
                   });
               }
-              axios.post('http://127.0.0.1:8010/inv/vendor', {
-                //SEND TO CLIENT
-                newItem: req.body,
-                itemId: id,
-              })
-                .then(res => {
-                  console.log('POST RES', res);
-                })
-                .catch(err => {
-                  console.log('POST ERR ', err);
-                });
+              // axios.post('http://127.0.0.1:8010/inv/vendor', {
+              //   //SEND TO CLIENT
+              //   newItem: req.body,
+              //   itemId: id,
+              // })
+              //   .then(res => {
+              //     console.log('POST RES', res);
+              //   })
+              //   .catch(err => {
+              //     console.log('POST ERR ', err);
+              //   });
             })
             .catch(err => {
               console.log('ERR STOCK ', err);
@@ -151,21 +158,22 @@ app.put('/inv/vendor/update', function(req, res) {
   }
   db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`)
     .then(res => {
-      axios.put('http://127.0.0.1:8010/inv/update', {
-        //SEND TO CLIENT
-        update: req.body,
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log( 'ERR ', err);
-        });
+      // axios.put('http://127.0.0.1:8010/inv/update', {
+      //   //SEND TO CLIENT
+      //   update: req.body,
+      // })
+      //   .then(res => {
+      //     console.log(res);
+      //   })
+      //   .catch(err => {
+      //     console.log( 'ERR ', err);
+      //   });
     });
 
   res.send('DONE');
 });
 
+app.use(apm.middleware.express());
 
 app.listen(8010, function() {
   console.log('listening on port 8010');
