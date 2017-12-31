@@ -1,0 +1,47 @@
+config:
+  target: 'http://127.0.0.1:8010'
+  phases:
+    - duration: 30
+      arrivalRate: 60
+  payload:
+      path: "artproducts.csv"
+      fields:
+        - "id"
+        - "quantity"
+        - "productname"
+        - "productprice"
+        - "productdes"
+        - "soldby"
+      order: "sequence"
+scenarios:
+  - flow:
+    - put:
+        url: "/update"
+        json:
+          products: [{
+            quantity: "{{ quantity }}",
+            productid: "{{ id }}"
+          }]
+    - put:
+        url: "/undo"
+        json:
+          products: [{
+            quantity: "{{ quantity }}",
+            productid: "{{ id }}"
+          }]
+    - get:
+        url: "/inv/{{ id }}"
+    - post:
+        url: "/inv/vendor/newItem"
+        json:
+          quantity: "{{ quantity }}"
+          productname: "{{ productname }}"
+          productprice: "{{ productprice }}"
+          productdes: "{{ productdes }}"
+          soldby: "{{ soldby }}"
+          categories: "[1, 2, 3]"
+    - put:
+        url: "/inv/vendor/update"
+        json: 
+          quantity: "{{ quantity }}"
+          productid: "{{ id }}"

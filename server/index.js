@@ -1,3 +1,7 @@
+var apm = require('elastic-apm-node').start({
+  appName: 'amazInv',
+  serverUrl: 'http://localhost:8010',
+});
 var faker = require('faker');
 var express = require('express');
 var fs = require('file-system');
@@ -13,50 +17,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-  // bs.products.query().where({id: 1}).then(function(res) {
-  //   console.log(res);
-  // });
-  
-  // axios.put('http://127.0.0.1:8010/inv/vendor/update', {
-  //   productid: 2,
-  //   quantity: 6,
-  // })
-  //   .then(res => {
-  //   })
-  //   .catch(err => {
-  //     console.log('PUT BAD');
-  //   });
-  // axios.get('http://127.0.0.1:8010/inv/2')
-  //   .then(res => {
-  //   })
-  //   .catch(err => {
-  //     console.log('GET itemid BAD');
-  //   });
-  // axios.get('http://127.0.0.1:8010/inv/2')
-  //   .then(res => {
-  //   })
-  //   .catch(err => {
-  //     console.log('PUT BAD');
-  //   });
-  // axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
-  //   productname: 'giraffe socks',
-  //   productprice: '$15.00',
-  //   prime: true,
-  //   productdes: 'adding a new item',
-  //   stock: true,
-  //   soldby: 'me.inc',
-  //   quantity: 500,
-  //   categories: [2, 5, 10],
-  // })
-  //   .then(res => {
-  //     console.log('POST RES ', res);
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-});
+app.use(apm.middleware.express());
 
 app.put('/update', function(req, res) {
   //FROM transactions
@@ -88,7 +49,7 @@ app.get('/inv/:itemid', function(req, res) {
       db.query(`SELECT * FROM reviews, stock, productcategory, category WHERE reviews.productid = ${req.url.slice(5)} 
         AND stock.productid = ${req.url.slice(5)} AND productcategory.productid = ${req.url.slice(5)} AND category.id = productcategory.categoryid`)
         .then (res => {
-          prodInfo['reviews'] = res.rows;
+          prodInfo['reviewStockCate'] = res.rows;
           console.log(prodInfo);
           res.send(prodDetails);
         });
@@ -120,17 +81,17 @@ app.post('/inv/vendor/newItem', function(req, res) {
                     console.log('ERR PC ', err);
                   });
               }
-              axios.post('http://127.0.0.1:8010/inv/vendor', {
-                //SEND TO CLIENT
-                newItem: req.body,
-                itemId: id,
-              })
-                .then(res => {
-                  console.log('POST RES', res);
-                })
-                .catch(err => {
-                  console.log('POST ERR ', err);
-                });
+              // axios.post('http://127.0.0.1:8010/inv/vendor', {
+              //   //SEND TO CLIENT
+              //   newItem: req.body,
+              //   itemId: id,
+              // })
+              //   .then(res => {
+              //     console.log('POST RES', res);
+              //   })
+              //   .catch(err => {
+              //     console.log('POST ERR ', err);
+              //   });
             })
             .catch(err => {
               console.log('ERR STOCK ', err);
@@ -151,16 +112,16 @@ app.put('/inv/vendor/update', function(req, res) {
   }
   db.query(`UPDATE stock SET amount = amount + ${req.body.quantity} WHERE productid = ${req.body.productid}`)
     .then(res => {
-      axios.put('http://127.0.0.1:8010/inv/update', {
-        //SEND TO CLIENT
-        update: req.body,
-      })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log( 'ERR ', err);
-        });
+      // axios.put('http://127.0.0.1:8010/inv/update', {
+      //   //SEND TO CLIENT
+      //   update: req.body,
+      // })
+      //   .then(res => {
+      //     console.log(res);
+      //   })
+      //   .catch(err => {
+      //     console.log( 'ERR ', err);
+      //   });
     });
 
   res.send('DONE');
