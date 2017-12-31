@@ -5,8 +5,7 @@ var i = 1;
 var productCount = 10000;
 
 var products = function() {
-  return `${i}, ${Math.round(Math.random() * 200000)}, ${faker.commerce.productName()}, 
-  ${faker.commerce.price()}, ${faker.lorem.sentences()}, ${faker.lorem.word()}`;
+  return `${i}, ${Math.round(Math.random() * 200000)}, ${faker.commerce.productName()}, ${faker.commerce.price()}, ${faker.lorem.sentences()}, ${faker.lorem.word()}`;
 };
 
 var stream = fs.createWriteStream('artproducts.csv', {'flags': 'a', 'encoding': null, 'mode': 0o666});

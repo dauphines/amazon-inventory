@@ -2,7 +2,7 @@ config:
   target: 'http://127.0.0.1:8010'
   phases:
     - duration: 30
-      arrivalRate: 60
+      arrivalRate: 10
   payload:
       path: "artproducts.csv"
       fields:
@@ -15,22 +15,22 @@ config:
       order: "sequence"
 scenarios:
   - flow:
-    - put:
-        url: "/update"
-        json:
-          products: [{
-            quantity: "{{ quantity }}",
-            productid: "{{ id }}"
-          }]
-    - put:
-        url: "/undo"
-        json:
-          products: [{
-            quantity: "{{ quantity }}",
-            productid: "{{ id }}"
-          }]
-    - get:
-        url: "/inv/{{ id }}"
+    # - put:
+    #     url: "/update"
+    #     json:
+    #       products: [{
+    #         quantity: "{{ quantity }}",
+    #         productid: "{{ id }}"
+    #       }]
+    # - put:
+    #     url: "/undo"
+    #     json:
+    #       products: [{
+    #         quantity: "{{ quantity }}",
+    #         productid: "{{ id }}"
+    #       }]
+    # - get:
+    #     url: "/inv/{{ id }}"
     - post:
         url: "/inv/vendor/newItem"
         json:
@@ -40,8 +40,8 @@ scenarios:
           productdes: "{{ productdes }}"
           soldby: "{{ soldby }}"
           categories: "[1, 2, 3]"
-    - put:
-        url: "/inv/vendor/update"
-        json: 
-          quantity: "{{ quantity }}"
-          productid: "{{ id }}"
+    # - put:
+    #     url: "/inv/vendor/update"
+    #     json: 
+    #       quantity: "{{ quantity }}"
+    #       productid: "{{ id }}"

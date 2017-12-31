@@ -17,7 +17,53 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
-app.use(apm.middleware.express());
+
+app.get('/', (req, res) => {
+  // bs.products.query().where({id: 1}).then(function(res) {
+  //   console.log(res);
+  // });
+  
+  // axios.put('http://127.0.0.1:8010/inv/vendor/update', {
+  //   productid: 2,
+  //   quantity: 6,
+  // })
+  //   .then(res => {
+  //   })
+  //   .catch(err => {
+  //     console.log('PUT BAD');
+  //   });
+
+  // axios.get('http://127.0.0.1:8010/inv/2')
+  //   .then(res => {
+  //   })
+  //   .catch(err => {
+  //     console.log('GET itemid BAD');
+  //   });
+
+  // axios.get('http://127.0.0.1:8010/inv/2')
+  //   .then(res => {
+  //   })
+  //   .catch(err => {
+  //     console.log('PUT BAD');
+  //   });
+
+  // axios.post('http://127.0.0.1:8010/inv/vendor/newItem', {
+  //   productname: 'giraffe socks',
+  //   productprice: '$15.00',
+  //   prime: true,
+  //   productdes: 'adding a new item',
+  //   stock: true,
+  //   soldby: 'me.inc',
+  //   quantity: 500,
+  //   categories: [2, 5, 10],
+  // })
+  //   .then(res => {
+  //     console.log('POST RES ', res);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+});
 
 app.put('/update', function(req, res) {
   //FROM transactions
@@ -127,6 +173,7 @@ app.put('/inv/vendor/update', function(req, res) {
   res.send('DONE');
 });
 
+app.use(apm.middleware.express());
 
 app.listen(8010, function() {
   console.log('listening on port 8010');
