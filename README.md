@@ -1,10 +1,14 @@
 # Project Name
 
-The project description
+This repo is a clone of Amazon's inventory service. It is meant to handle vendor's adding to an existing item or new item, possible order fulfillment, product detailed information, sending new inventory information to client, and purchasing an item.
+
+This service generates all application data needed to answer the question:
+
+On a week by week basis, do users who spend more than $100 on products at the time of Prime membership signup convert to a full Prime membership more often than those who spend less than $100?
 
 ## Roadmap
 
-View the project roadmap [here](LINK_TO_DOC)
+View the project roadmap https://docs.google.com/document/d/108nmp7658FC7fHGytD5jnQUf2bbRSl1Cow17ACOBNMY/edit?usp=sharing
 
 ## Contributing
 
