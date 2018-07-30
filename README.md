@@ -1,6 +1,6 @@
 # Project Name
 
-This repo is a clone of Amazon's inventory service. It is meant to handle vendor's adding to an existing item or new item, possible order fulfillment, product detailed information, sending new inventory information to client, and purchasing an item.
+This repo is a clone of Amazon's inventory service. It is meant to handle vendor’s fulfilling inventory orders, adding a new item to inventory, handling client’s request for item detailed information, and purchasing items.
 
 This service generates all application data needed to answer the question:
 
