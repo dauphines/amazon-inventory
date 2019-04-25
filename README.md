@@ -1,4 +1,4 @@
-# Project Name
+# Amazon Inventory Clone
 
 This repo is a clone of Amazon's inventory service. It is meant to handle vendor’s fulfilling inventory orders, adding a new item to inventory, handling client’s request for item detailed information, and purchasing items.
 
@@ -22,10 +22,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
     1. [Installing Dependencies](#installing-dependencies)
     1. [Tasks](#tasks)
 
-## Usage
-
-> Some usage instructions
-
 ## Requirements
 
 - Node 6.9.x
@@ -33,7 +29,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 - Postgresql 9.6.x
 - etc
 
-## Other Information
 
-(TODO: fill this out with details about your project. Suggested ideas: architecture diagram, schema, and any other details from your app plan that sound interesting.)
 
